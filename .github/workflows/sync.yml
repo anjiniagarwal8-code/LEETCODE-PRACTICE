@@ -15,4 +15,4 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           leetcode-csrf-token: ${{ secrets.LEETCODE_CSRF_TOKEN }}
-          leetcode-cookie: ${{ secrets.LEETCODE_COOKIE }}
+          leetcode-session: ${{ secrets.LEETCODE_COOKIE }}
