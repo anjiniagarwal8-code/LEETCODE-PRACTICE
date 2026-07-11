@@ -1,15 +1,18 @@
 name: Sync Leetcode
+
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * 6"
+    - cron: '0 8 * * *'
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Sync
-        uses: joshcai/leetcode-sync@v1.7
+        uses: joshcai/leetcode-sync@master
         with:
-          github-token: ${{ github.token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           leetcode-csrf-token: ${{ secrets.LEETCODE_CSRF_TOKEN }}
-          leetcode-session: ${{ secrets.LEETCODE_SESSION }}
+          leetcode-cookie: ${{ secrets.LEETCODE_COOKIE }}
