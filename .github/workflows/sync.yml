@@ -1,4 +1,4 @@
-name: Sync Leetcode
+name: Sync LeetCode
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Fetch and Sync Submissions
+      - name: Fetch and Save Submissions
         env:
           LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
           LEETCODE_CSRF_TOKEN: ${{ secrets.LEETCODE_CSRF_TOKEN }}
@@ -31,10 +31,6 @@ jobs:
           session = os.environ.get('LEETCODE_SESSION')
           csrf = os.environ.get('LEETCODE_CSRF_TOKEN')
 
-          if not session or not csrf:
-              print("Missing secrets! Make sure LEETCODE_SESSION and LEETCODE_CSRF_TOKEN are set.")
-              exit(1)
-
           headers = {
               'Cookie': f'LEETCODE_SESSION={session}; csrftoken={csrf};',
               'X-Csrf-Token': csrf,
@@ -42,12 +38,12 @@ jobs:
               'Referer': 'https://leetcode.com/'
           }
 
-          # Fetch recent accepted submissions via LeetCode GraphQL API
           query = """
           query submissionList($offset: Int!, $limit: Int!) {
             submissionList(offset: $offset, limit: $limit) {
               submissions {
                 id
+                title
                 titleSlug
                 statusDisplay
                 lang
@@ -65,10 +61,17 @@ jobs:
 
           data = res.json()
           if 'data' in data and data['data']['submissionList']:
-              print("Successfully fetched submissions!")
-              print(json.dumps(data['data']['submissionList']['submissions'], indent=2))
+              submissions = data['data']['submissionList']['submissions']
+              os.makedirs('leetcode-solutions', exist_ok=True)
+              
+              for sub in submissions:
+                  if sub['statusDisplay'] == 'Accepted':
+                      filename = f"leetcode-solutions/{sub['titleSlug']}.txt"
+                      with open(filename, 'w') as f:
+                          f.write(f"Problem: {sub['title']}\nLanguage: {sub['lang']}\nStatus: {sub['statusDisplay']}\nTimestamp: {sub['timestamp']}\n")
+              print("Saved solutions to folder!")
           else:
-              print("API Response Error:", data)
+              print("Error fetching submissions:", data)
               exit(1)
           EOF
 
@@ -76,6 +79,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff-index --quiet HEAD || git commit -m "Sync LeetCode submissions"
+          git add .
+          git diff-index --quiet HEAD || git commit -m "Sync LeetCode submissions [skip ci]"
           git push
