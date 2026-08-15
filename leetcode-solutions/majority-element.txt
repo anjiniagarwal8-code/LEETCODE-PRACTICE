@@ -1,0 +1,4 @@
+Problem: Majority Element
+Language: python3
+Status: Accepted
+Timestamp: 1786630173
