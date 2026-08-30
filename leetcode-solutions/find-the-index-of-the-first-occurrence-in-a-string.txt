@@ -1,4 +1,4 @@
 Problem: Find the Index of the First Occurrence in a String
 Language: python3
 Status: Accepted
-Timestamp: 1787413796
+Timestamp: 1787474194
