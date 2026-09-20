@@ -1,0 +1,4 @@
+Problem: Minimum Index Sum of Two Lists
+Language: python3
+Status: Accepted
+Timestamp: 1789916622
