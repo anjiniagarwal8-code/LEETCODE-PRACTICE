@@ -1,0 +1,4 @@
+Problem: Maximum Distance in Arrays
+Language: python3
+Status: Accepted
+Timestamp: 1790946020
